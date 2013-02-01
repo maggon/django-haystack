@@ -136,7 +136,7 @@ class SolrSearchBackend(BaseSearchBackend):
                             narrow_queries=None, spelling_query=None,
                             within=None, dwithin=None, distance_point=None,
                             models=None, limit_to_registered_models=None,
-                            result_class=None):
+                            result_class=None, def_type=None,boost_functions=None):
         kwargs = {'fl': '* score'}
 
         if fields:
@@ -204,6 +204,13 @@ class SolrSearchBackend(BaseSearchBackend):
         if query_facets is not None:
             kwargs['facet'] = 'on'
             kwargs['facet.query'] = ["%s:%s" % (field, value) for field, value in query_facets]
+
+        if def_type is not None:
+            kwargs['defType'] = def_type
+
+        if boost_functions is not None:
+            kwargs['bf'] = ["%s" % (value) for value in boost_functions]
+
 
         if limit_to_registered_models is None:
             limit_to_registered_models = getattr(settings, 'HAYSTACK_LIMIT_TO_REGISTERED_MODELS', True)
